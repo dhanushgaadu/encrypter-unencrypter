@@ -2,8 +2,6 @@ import random
 class encrypter:
     def __init__(self):
         self.dic={}
-    print("\nNOTE:- WHILE ENCRYPTING THE KEY WILL BE RANDOMIZED\n")
-    print("note :- run only once !!!")
     def keygen(self):
         abc=list("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-_`+=}|~[]{\./?,<>:;!@#$%^&*()")
         abc.append(" ")
@@ -16,14 +14,17 @@ class encrypter:
         with open("key.txt","w") as w:
             for i in self.dic.items():
                 w.writelines((":".join(list(i)))+"\n")
-    def encoder(self,d_msg):
-        self.keygen()
+    def encoder(self,d_msg)->str:
         e_msg=[]
+        with open("key.txt","r") as r:
+            line = r.readlines()
+            line = ["".join(l.split("\n")) for l in line]
+            self.dic.update({h[0]:h[2] for h in line})
         for j in d_msg:
             if j in self.dic.keys():
                 e_msg.append(self.dic[j])
         return"".join(e_msg)
-    def decoder(self,e_msg):
+    def decoder(self,e_msg)->str:
         u_msg=[]
         with open("key.txt","r") as r:
             line = r.readlines()
@@ -33,7 +34,7 @@ class encrypter:
                     if j==h[2]:
                         u_msg.append(h[0])
         return"".join(u_msg)
-    def chooser(self):
+    def chooser(self)->int:
         try:
             x=int(input("\nenter a option :"))
         except ValueError:
@@ -61,7 +62,7 @@ class encrypter:
             check the encrpyted or unencrypted file\n\n''')
             elif h==2:
                 u_msg=self.inp()
-                print("encrpyted message=",self.encoder(u_msg))
+                print("encrpyted message:-"+str(self.encoder(u_msg)))
             elif h==3:
                 with open("encrypted.txt","r") as ue:
                     r=ue.read()
@@ -69,7 +70,11 @@ class encrypter:
                         e.write(self.decoder(r))
             elif h==4:
                 e_msg=self.inp()
-                print(self.decoder(e_msg))
+                print("decrypted message:-"+str(self.decoder(e_msg)))
+            elif h==5:
+                self.keygen()
+                print("""\n
+Key is generated successfully : )\n""")
             else:
                 raise ValueError
         except ValueError:
@@ -85,6 +90,7 @@ class encrypter:
 print('''\nEnter 1 to encrypt a file data and store into another file :) \n
 Enter 2 to encrypt the unecrypted word input and print in terminal \n
 Enter 3 to unencrpyt a file data and store into another file\n
-enter 4 to unencrpt a encrpypted word input and print in terminal\n''')
+enter 4 to unencrpt a encrpypted word input and print in terminal\n
+enter 5 to regenerate a new key : )''')
 encrypter().file()
 encrypter().main()
